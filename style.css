@@ -1,0 +1,189 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #e0f2f7;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* 上部に寄せる */
+    min-height: 100vh;
+    margin: 20px 0;
+    padding: 0 15px; /* 横幅が狭い場合でもコンテンツが見切れないように */
+}
+
+.container {
+    background-color: #ffffff;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 800px;
+    width: 100%;
+    box-sizing: border-box; /* paddingを含めて幅を計算 */
+}
+
+h1 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-size: 2em;
+}
+
+h2 {
+    color: #34495e;
+    margin-top: 30px;
+    border-bottom: 2px solid #e0f2f7;
+    padding-bottom: 10px;
+}
+
+p {
+    margin-bottom: 10px;
+    line-height: 1.6;
+    font-size: 1.1em;
+}
+
+button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-top: 10px; /* ボタン間のスペースを調整 */
+}
+
+button:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+.hidden {
+    display: none;
+}
+
+#results p,
+#finalResults p { /* 結果表示のpタグ共通スタイル */
+    font-size: 1.1em;
+    margin-bottom: 8px;
+}
+
+#results span,
+#finalResults span {
+    font-weight: bold;
+    color: #e74c3c;
+}
+
+.message-area {
+    margin-top: 25px;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #2c3e50;
+    text-align: center;
+    word-break: break-word; /* 長いメッセージも折り返す */
+}
+
+.message-area.lucky {
+    background-color: #d4edda;
+    border-color: #28a745;
+    color: #155724;
+}
+
+.message-area.unlucky {
+    background-color: #f8d7da;
+    border-color: #dc3545;
+    color: #721c24;
+}
+
+.message-area.small { /* 1回ごとの結果表示用 */
+    min-height: 40px;
+    font-size: 1em;
+    font-weight: normal;
+    margin-top: 15px;
+    padding: 10px;
+}
+
+.chart-container {
+    margin-top: 40px;
+    position: relative;
+    width: 100%;
+    height: 400px; /* グラフの高さを固定 */
+}
+
+#myChart {
+    max-width: 100%;
+    height: 100%; /* 親要素に合わせる */
+}
+
+.download-button, .reset-button {
+    margin-top: 20px;
+    background-color: #28a745; /* ダウンロードボタン */
+}
+
+.reset-button {
+    background-color: #6c757d; /* リセットボタン */
+    margin-left: 10px;
+}
+
+.download-button:hover {
+    background-color: #218838;
+}
+
+.reset-button:hover {
+    background-color: #5a6268;
+}
+
+/* ゲームエリアのスタイル */
+#gameArea {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#playerHandSelection {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#playerHandSelection button {
+    margin: 0 10px;
+    width: 100px;
+    padding: 12px 15px; /* ボタンのパディング */
+    font-size: 1.1em;
+}
+
+#gameArea p {
+    font-size: 1.1em;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+#gameArea p span {
+    color: #3498db; /* ゲーム中の表示は青色に */
+}
+
+/* 最終結果エリアのPタグとSpanは #finalResults に絞る */
+#finalResults p {
+    font-size: 1.1em;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+#finalResults span {
+    color: #e74c3c; /* 最終結果のSpanは赤色に */
+}
