@@ -187,3 +187,17 @@ button:active {
 #finalResults span {
     color: #e74c3c; /* 最終結果のSpanは赤色に */
 }
+
+/* style.css */
+
+/* body全体に適用する場合 */
+body {
+    /* ... (既存のスタイル) ... */
+    touch-action: manipulation; /* ダブルタップやピンチ操作のデフォルト動作を抑制 */
+}
+
+/* または、コンテナ要素に適用する場合 */
+.container {
+    /* ... (既存のスタイル) ... */
+    touch-action: manipulation;
+}
