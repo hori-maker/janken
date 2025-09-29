@@ -129,31 +129,54 @@ document.addEventListener('DOMContentLoaded', () => {
         stdDevSpan.textContent = stdDev.toFixed(2);
         zScoreSpan.textContent = zScore.toFixed(2);
 
-        // ★メッセージ生成 (Z値とパーセンテージを考慮)★
-        let message = `堅実な結果！${wins}勝はZ値${zScore.toFixed(2)}。`;
-        let messageClass = '';
+        // ★★★ メッセージ生成・表示部分を、バリエーションのあるコードに置き換えます ★★★
 
-        // 上位2.5% (Z >= 1.96) または 下位2.5% (Z <= -1.96)
-        if (Math.abs(zScore) >= 1.96) { 
-            if (zScore > 0) { // 上位
-                message = `🎉🎉 驚異の勝ち越し！${wins}勝はZ値${zScore.toFixed(2)}。これは滅多にない幸運！\n`;
-                message += `統計的に見て、これは上位約 ${(upperTailProbability * 100).toFixed(1)}% に入る結果です！ 🎉🎉`;
-                messageClass = 'lucky';
-            } else { // 下位
-                message = `😭😭 まさかの大敗北！${wins}勝はZ値${zScore.toFixed(2)}。こんなに負けるのは逆にすごい…\n`;
-                message += `統計的に見て、これは下位約 ${(cumulativeProbability * 100).toFixed(1)}% に入る結果です。今日は運勢が悪いかも？ 😭😭`;
-                messageClass = 'unlucky';
-            }
-        } else {
-             // 上位X%の表示
-            message += `上位約 ${(upperTailProbability * 100).toFixed(1)}% に入る結果ですね。`;
+    const expectedWins = MAX_ROUNDS * WIN_PROBABILITY;
+    const variance = MAX_ROUNDS * WIN_PROBABILITY * (1 - WIN_PROBABILITY);
+    const stdDev = Math.sqrt(variance);
+    const zScore = (wins - expectedWins) / stdDev;
+
+    const cumulativeProbability = normalCdf(wins, expectedWins, stdDev); 
+    const upperTailProbability = 1 - cumulativeProbability; 
+
+    // ... (結果表示などのコード) ...
+
+    let message = '';
+    let messageClass = '';
+
+    // Z値の絶対値が1.96以上 (5%有意水準) の場合
+    if (Math.abs(zScore) >= 1.96) {
+        if (zScore > 0) { // 上位の場合
+            const luckyMessages = [
+                `【お見事！確率を超えた勝利！】 ${wins}勝、Z値 ${zScore.toFixed(2)}。これは統計的に見て、上位約 ${(upperTailProbability * 100).toFixed(1)}% に入る、大変珍しい結果です！君のじゃんけん、もしかしたらAIより強いかも？`,
+                `【AIも驚愕！規格外の強さ！】 ${wins}勝、Z値 ${zScore.toFixed(2)}。この結果は、統計学的に見ても非常に珍しい、上位約 ${(upperTailProbability * 100).toFixed(1)}% の幸運な結果です！君のじゃんけん、もはやAIの予測を超えている！`,
+                `【統計学も唸る！未来予知？】 ${wins}勝、Z値 ${zScore.toFixed(2)}。この結果は、統計的に見て上位約 ${(upperTailProbability * 100).toFixed(1)}% に入る、まさに奇跡！もしかしたら、未来を予知でもしているのか…？`,
+                `【君こそがじゃんけん王！】 ${wins}勝、Z値 ${zScore.toFixed(2)}！これは、上位約 ${(upperTailProbability * 100).toFixed(1)}% の偉業！ 君は、AIに勝つだけでなく、確率をも操るじゃんけんの支配者だ！ この幸運を、ぜひ他のことにも活かしてくれ！`
+            ];
+            // ランダムにメッセージを選択
+            message = luckyMessages[Math.floor(Math.random() * luckyMessages.length)];
+            messageClass = 'lucky';
+        } else { // 下位の場合
+            const unluckyMessages = [
+                `【珍しい結果かも？】 ${wins}勝、Z値 ${zScore.toFixed(2)}。これは統計的に見て、下位約 ${(cumulativeProbability * 100).toFixed(1)}% に入る、なかなか見られない結果です。今日は宇宙の法則が乱れているのかも…？`,
+                `【確率は君の敵だった？】 ${wins}勝、Z値 ${zScore.toFixed(2)}。確率を計算すると、この結果は下位約 ${(cumulativeProbability * 100).toFixed(1)}% に位置します。まるで、AIが「君には負ける」ということを学習したかのよう…。`,
+                `【伝説は、ここから始まる…？】 ${wins}勝、Z値 ${zScore.toFixed(2)}。これは、偶然とは言えないほど低い確率を記録しました。統計学的に見ると、この結果は下位約 ${(cumulativeProbability * 100).toFixed(1)}% に入ります。ある意味、君は統計の荒らしだ！`,
+                `【今日の運勢、星３つ…？】 ${wins}勝、Z値 ${zScore.toFixed(2)}。この結果は、統計的に見て下位約 ${(cumulativeProbability * 100).toFixed(1)}% です。今日の運勢は、統計データによると…あまり良くないかもしれませんね。`
+            ];
+            // ランダムにメッセージを選択
+            message = unluckyMessages[Math.floor(Math.random() * unluckyMessages.length)];
+            messageClass = 'unlucky';
         }
-        
-        messageAreaFinal.textContent = message;
-        messageAreaFinal.className = 'message-area'; // クラスをリセット
-        if (messageClass) {
-            messageAreaFinal.classList.add(messageClass);
-        }
+    } else {
+        // 通常メッセージ
+        message = `堅実な結果！ ${wins}勝はZ値 ${zScore.toFixed(2)}。この結果は、統計的に見て上位約 ${(upperTailProbability * 100).toFixed(1)}% に入ります。`;
+    }
+    
+    messageAreaFinal.textContent = message;
+    messageAreaFinal.className = 'message-area'; // クラスをリセット
+    if (messageClass) {
+        messageAreaFinal.classList.add(messageClass);
+    }
 
         // グラフの描画
         drawChart(wins, expectedWins, stdDev, zScore);
