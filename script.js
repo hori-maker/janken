@@ -135,27 +135,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 message = unluckyMessages[Math.floor(Math.random() * unluckyMessages.length)];
                 messageClass = 'unlucky';
             }
+        // Z値の絶対値が1.96未満の場合 (堅実・平凡な結果)
         } else {
-            // 通常メッセージ (Z値が-1.96～1.96の範囲内)
+            // 通常メッセージ (ランダムに選択)
             const normalMessages = [
                 `【堅実な結果！】 ${wins}勝、Z値 ${zScore.toFixed(2)}。統計的に見ると、これは上位約 ${(upperTailProbability * 100).toFixed(1)}% の範囲です。AIの平均的な結果に近いかもしれませんね。`,
                 `【安定のパフォーマンス！】 ${wins}勝、Z値 ${zScore.toFixed(2)}。上位約 ${(upperTailProbability * 100).toFixed(1)}% の結果で、まさに「平均的」なじゃんけんとなりました。統計学では、この「普通」の分布が基本となります。`,
-                `【普通に良い感じ！】 ${wins}勝、Z値 ${zScore.toFixed(2)}。上位約 ${(upperTailProbability * 100).toFixed(1)}% に入っています。悪くない結果ですが、AIの得意な領域かもしれませんね。次はもっとレアな結果を目指して、じゃんけんを極めてみよう！`,
+                `【普通に良い感じ！】 ${wins}勝、Z値 ${zScore.toFixed(2)}。上位約 ${(upperTailProbability * 100).toFixed(1)}% に入っています。悪くない結果ですが、AIの得意な領域かもしれませんね。 次はもっとレアな結果を目指して、じゃんけんを極めてみよう！`,
                 `【AIも納得？】 ${wins}勝、Z値 ${zScore.toFixed(2)}。この結果は、統計的に上位約 ${(upperTailProbability * 100).toFixed(1)}% に位置します。AIが予測する範囲内の、安定したパフォーマンスです！`,
-                `【君は平均を引いた！すごい！】 ${wins}勝、Z値 ${zScore.toFixed(2)}。これは、統計的に見て下位約 ${(cumulativeProbability * 100).toFixed(1)}% に入ります。平均的な結果とは異なる、ユニークな体験ですね！`,
-                `【次へのステップ！】 ${wins}勝、Z値 ${zScore.toFixed(2)}。この結果は、統計的に見て上位約 ${(upperTailProbability * 100).toFixed(1)}% の範囲でした。次は、もっとレアな結果を目指して、じゃんけんを極めてみよう！`
+                `【君は平均を引いた！すごい！】 ${wins}勝、Z値 ${zScore.toFixed(2)}。これは、統計的に見て上位約 ${(upperTailProbability * 100).toFixed(1)}% に入る、まさに「平均的な」結果！ 宝くじに当たるより難しいかもしれない（？）この平均値を引き当てた君は、ある意味ラッキー！`,
+                `【次へのステップ！】 ${wins}勝、Z値 ${zScore.toFixed(2)}。この結果は、統計的に見て上位約 ${(upperTailProbability * 100).toFixed(1)}% の範囲でした。次は、もっとレアな結果を目指して、じゃんけんを極めてみよう！`,
+                // ★★★ 追加メッセージ案 ★★★
+                `【標準の範囲内！】 ${wins}勝、Z値 ${zScore.toFixed(2)}。統計的には、これは上位約 ${(upperTailProbability * 100).toFixed(1)}% の範囲に収まっています。多くの人がこのあたりに落ち着くようです。`,
+                `【平均値の近く！】 ${wins}勝、Z値 ${zScore.toFixed(2)}。上位約 ${(upperTailProbability * 100).toFixed(1)}% ということは、平均値からそれほど離れていない、標準的な結果と言えますね。`,
+                `【統計の「真ん中」を体験！】 ${wins}勝、Z値 ${zScore.toFixed(2)}。この結果は、上位約 ${(upperTailProbability * 100).toFixed(1)}% のゾーンです。統計分布の「真ん中」あたりを体験している証拠かもしれません！`
             ];
+            
             // ランダムにメッセージを選択
             message = normalMessages[Math.floor(Math.random() * normalMessages.length)];
             messageClass = ''; // 通常メッセージなのでクラスは付けない
         }
-    
-        messageAreaFinal.textContent = message;
-        messageAreaFinal.className = 'message-area'; // クラスをリセット
-        if (messageClass) {
-            messageAreaFinal.classList.add(messageClass);
-        }
-
+    }
         // グラフの描画
         drawChart(wins, expectedWins, stdDev, zScore);
     }
