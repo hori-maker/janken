@@ -5,10 +5,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const roundResultDiv = document.getElementById('roundResult');
     
     const playerChoiceSpan = document.getElementById('playerChoice');
-    const playerChoiceIconSpan = document.getElementById('playerChoiceIcon'); // IDを修正 (createElementではなくHTMLにある前提)
+    const playerChoiceIconSpan = document.getElementById('playerChoiceIcon');
 
     const computerChoiceSpan = document.getElementById('computerChoice');
-    const computerChoiceIconSpan = document.getElementById('computerChoiceIcon'); // IDを修正
+    const computerChoiceIconSpan = document.getElementById('computerChoiceIcon');
 
     const currentWinsSpan = document.getElementById('currentWins');
     const currentTotalRoundsSpan = document.getElementById('currentTotalRounds');
@@ -106,10 +106,32 @@ document.addEventListener('DOMContentLoaded', () => {
         return 0.5 * (1 + erf(z / Math.sqrt(2)));
     }
 
-        // 最終結果の表示と統計計算
+    // 最終結果の表示と統計計算
     function showFinalResults() {
-        // ... (前略：DOM要素の取得、統計量の計算など) ...
+        finalResultsDiv.classList.remove('hidden');
+        playerHandSelectionDiv.classList.add('hidden');
+        roundResultDiv.classList.add('hidden');
 
+        // ★★★ 統計量の計算 (一度だけ宣言) ★★★
+        const expectedWins = MAX_ROUNDS * WIN_PROBABILITY;
+        const variance = MAX_ROUNDS * WIN_PROBABILITY * (1 - WIN_PROBABILITY);
+        const stdDev = Math.sqrt(variance);
+        const zScore = (wins - expectedWins) / stdDev;
+
+        // ★累積確率と上位/下位パーセンテージを計算★
+        const cumulativeProbability = normalCdf(wins, expectedWins, stdDev); // 下位からの確率
+        const upperTailProbability = 1 - cumulativeProbability; // 上位からの確率 (パーセンテージ)
+
+        // 結果表示用のspan要素に値を設定
+        totalRoundsFinalSpan.textContent = MAX_ROUNDS;
+        finalWinsSpan.textContent = wins;
+        finalLossesSpan.textContent = losses;
+        finalDrawsSpan.textContent = draws;
+        expectedWinsSpan.textContent = expectedWins.toFixed(2);
+        stdDevSpan.textContent = stdDev.toFixed(2);
+        zScoreSpan.textContent = zScore.toFixed(2);
+
+        // ★メッセージ生成・表示部分★
         let message = '';
         let messageClass = '';
 
@@ -126,7 +148,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 messageClass = 'lucky';
             } else { // 下位の場合 (不運・珍しい結果)
                 const unluckyMessages = [
-                    // ★★★ 下位の場合のメッセージを修正 ★★★
                     `【統計的に珍しい結果】 ${wins}勝、Z値 ${zScore.toFixed(2)}。これは統計的に見て、下位約 ${(cumulativeProbability * 100).toFixed(1)}% に入る、なかなか見られない結果です。`,
                     `【確率は君の敵だった？】 ${wins}勝、Z値 ${zScore.toFixed(2)}。確率を計算すると、この結果は下位約 ${(cumulativeProbability * 100).toFixed(1)}% に位置します。平均からは大きく外れているようです。`,
                     `【「普通」からは程遠い…】 ${wins}勝、Z値 ${zScore.toFixed(2)}。これは、統計学的に見ると下位約 ${(cumulativeProbability * 100).toFixed(1)}% に入る、珍しい結果と言えるでしょう。`,
@@ -155,7 +176,13 @@ document.addEventListener('DOMContentLoaded', () => {
             message = normalMessages[Math.floor(Math.random() * normalMessages.length)];
             messageClass = ''; // 通常メッセージなのでクラスは付けない
         }
-    }
+    
+        messageAreaFinal.textContent = message;
+        messageAreaFinal.className = 'message-area'; // クラスをリセット
+        if (messageClass) {
+            messageAreaFinal.classList.add(messageClass);
+        }
+
         // グラフの描画
         drawChart(wins, expectedWins, stdDev, zScore);
     }
