@@ -106,38 +106,16 @@ document.addEventListener('DOMContentLoaded', () => {
         return 0.5 * (1 + erf(z / Math.sqrt(2)));
     }
 
-      // 最終結果の表示と統計計算
+        // 最終結果の表示と統計計算
     function showFinalResults() {
-        finalResultsDiv.classList.remove('hidden');
-        playerHandSelectionDiv.classList.add('hidden'); 
-        roundResultDiv.classList.add('hidden'); 
+        // ... (前略：DOM要素の取得、統計量の計算など) ...
 
-        // ★★★ 統計量の計算 (一度だけ宣言) ★★★
-        const expectedWins = MAX_ROUNDS * WIN_PROBABILITY;
-        const variance = MAX_ROUNDS * WIN_PROBABILITY * (1 - WIN_PROBABILITY);
-        const stdDev = Math.sqrt(variance);
-        const zScore = (wins - expectedWins) / stdDev;
-
-        // ★累積確率と上位/下位パーセンテージを計算★
-        const cumulativeProbability = normalCdf(wins, expectedWins, stdDev); // 下位からの確率
-        const upperTailProbability = 1 - cumulativeProbability; // 上位からの確率 (パーセンテージ)
-
-        // 結果表示用のspan要素に値を設定
-        totalRoundsFinalSpan.textContent = MAX_ROUNDS;
-        finalWinsSpan.textContent = wins;
-        finalLossesSpan.textContent = losses;
-        finalDrawsSpan.textContent = draws;
-        expectedWinsSpan.textContent = expectedWins.toFixed(2);
-        stdDevSpan.textContent = stdDev.toFixed(2);
-        zScoreSpan.textContent = zScore.toFixed(2);
-
-        // ★メッセージ生成・表示部分★
         let message = '';
         let messageClass = '';
 
         // Z値の絶対値が1.96以上 (5%有意水準) の場合
         if (Math.abs(zScore) >= 1.96) {
-            if (zScore > 0) { // 上位の場合
+            if (zScore > 0) { // 上位の場合 (幸運・すごい結果)
                 const luckyMessages = [
                     `【お見事！確率を超えた勝利！】 ${wins}勝、Z値 ${zScore.toFixed(2)}。これは統計的に見て、上位約 ${(upperTailProbability * 100).toFixed(1)}% に入る、大変珍しい結果です！君のじゃんけん、もしかしたらAIより強いかも？`,
                     `【AIも驚愕！規格外の強さ！】 ${wins}勝、Z値 ${zScore.toFixed(2)}。この結果は、統計学的に見ても非常に珍しい、上位約 ${(upperTailProbability * 100).toFixed(1)}% の幸運な結果です！君のじゃんけん、もはやAIの予測を超えている！`,
@@ -146,37 +124,37 @@ document.addEventListener('DOMContentLoaded', () => {
                 ];
                 message = luckyMessages[Math.floor(Math.random() * luckyMessages.length)];
                 messageClass = 'lucky';
-            } else { // 下位の場合
+            } else { // 下位の場合 (不運・珍しい結果)
                 const unluckyMessages = [
-                    `【珍しい結果かも？】 ${wins}勝、Z値 ${zScore.toFixed(2)}。これは統計的に見て、下位約 ${(cumulativeProbability * 100).toFixed(1)}% に入る、なかなか見られない結果です。今日は宇宙の法則が乱れているのかも…？`,
-                    `【確率は君の敵だった？】 ${wins}勝、Z値 ${zScore.toFixed(2)}。確率を計算すると、この結果は下位約 ${(cumulativeProbability * 100).toFixed(1)}% に位置します。まるで、AIが「君には負ける」ということを学習したかのよう…。`,
-                    `【伝説は、ここから始まる…？】 ${wins}勝、Z値 ${zScore.toFixed(2)}。これは、偶然とは言えないほど低い確率を記録しました。統計学的に見ると、この結果は下位約 ${(cumulativeProbability * 100).toFixed(1)}% に入ります。ある意味、君は統計の荒らしだ！`,
-                    `【今日の運勢、星３つ…？】 ${wins}勝、Z値 ${zScore.toFixed(2)}。この結果は、統計的に見て下位約 ${(cumulativeProbability * 100).toFixed(1)}% です。今日の運勢は、統計データによると…あまり良くないかもしれませんね。`
+                    // ★★★ 下位の場合のメッセージを修正 ★★★
+                    `【統計的に珍しい結果】 ${wins}勝、Z値 ${zScore.toFixed(2)}。これは統計的に見て、下位約 ${(cumulativeProbability * 100).toFixed(1)}% に入る、なかなか見られない結果です。`,
+                    `【確率は君の敵だった？】 ${wins}勝、Z値 ${zScore.toFixed(2)}。確率を計算すると、この結果は下位約 ${(cumulativeProbability * 100).toFixed(1)}% に位置します。平均からは大きく外れているようです。`,
+                    `【「普通」からは程遠い…】 ${wins}勝、Z値 ${zScore.toFixed(2)}。これは、統計学的に見ると下位約 ${(cumulativeProbability * 100).toFixed(1)}% に入る、珍しい結果と言えるでしょう。`,
+                    `【君は平均を引いた！すごい！】 ${wins}勝、Z値 ${zScore.toFixed(2)}。これは、統計的に見て下位約 ${(cumulativeProbability * 100).toFixed(1)}% に入ります。平均的な結果とは異なる、ユニークな体験ですね！`
                 ];
                 message = unluckyMessages[Math.floor(Math.random() * unluckyMessages.length)];
                 messageClass = 'unlucky';
             }
-       } else {
-        // 通常メッセージ (ランダムに選択)
-        const normalMessages = [
-            `【堅実な結果！】 ${wins}勝、Z値 ${zScore.toFixed(2)}。統計的に見ると、これは上位約 ${(upperTailProbability * 100).toFixed(1)}% の範囲です。AIの平均的な結果に近いかもしれませんね。`,
-            `【安定のパフォーマンス！】 ${wins}勝、Z値 ${zScore.toFixed(2)}。上位約 ${(upperTailProbability * 100).toFixed(1)}% の結果で、まさに「平均的」なじゃんけんとなりました。統計学では、この「普通」の分布が基本となります。`,
-            `【普通の強さ、でも大切！】 ${wins}勝、Z値 ${zScore.toFixed(2)}。上位約 ${(upperTailProbability * 100).toFixed(1)}% の結果は、多くの人が経験する確率です。この「普通」からどれだけ離れているかが、確率の面白さなんですよね！`,
-            `【AIも納得？】 ${wins}勝、Z値 ${zScore.toFixed(2)}。この結果は、統計的に上位約 ${(upperTailProbability * 100).toFixed(1)}% に位置します。AIが予測する範囲内の、安定したパフォーマンスです！`,
-            `【君は平均を引いた！すごい！】 ${wins}勝、Z値 ${zScore.toFixed(2)}。上位約 ${(upperTailProbability * 100).toFixed(1)}% ということは、これはまさに「平均的な」結果！ 宝くじに当たるより難しいかもしれない（？）この平均値を引き当てた君は、ある意味ラッキー！`,
-            `【次へのステップ！】 ${wins}勝、Z値 ${zScore.toFixed(2)}。この結果は、統計的に見て上位約 ${(upperTailProbability * 100).toFixed(1)}% の範囲でした。次は、もっとレアな結果を目指して、じゃんけんを極めてみよう！`
-        ];
-        
-        // ランダムにメッセージを選択
-        message = normalMessages[Math.floor(Math.random() * normalMessages.length)];
-        messageClass = ''; // 通常メッセージなのでクラスは付けない
-    }
+        } else {
+            // 通常メッセージ (Z値が-1.96～1.96の範囲内)
+            const normalMessages = [
+                `【堅実な結果！】 ${wins}勝、Z値 ${zScore.toFixed(2)}。統計的に見ると、これは上位約 ${(upperTailProbability * 100).toFixed(1)}% の範囲です。AIの平均的な結果に近いかもしれませんね。`,
+                `【安定のパフォーマンス！】 ${wins}勝、Z値 ${zScore.toFixed(2)}。上位約 ${(upperTailProbability * 100).toFixed(1)}% の結果で、まさに「平均的」なじゃんけんとなりました。統計学では、この「普通」の分布が基本となります。`,
+                `【普通に良い感じ！】 ${wins}勝、Z値 ${zScore.toFixed(2)}。上位約 ${(upperTailProbability * 100).toFixed(1)}% に入っています。悪くない結果ですが、AIの得意な領域かもしれませんね。次はもっとレアな結果を目指して、じゃんけんを極めてみよう！`,
+                `【AIも納得？】 ${wins}勝、Z値 ${zScore.toFixed(2)}。この結果は、統計的に上位約 ${(upperTailProbability * 100).toFixed(1)}% に位置します。AIが予測する範囲内の、安定したパフォーマンスです！`,
+                `【君は平均を引いた！すごい！】 ${wins}勝、Z値 ${zScore.toFixed(2)}。これは、統計的に見て下位約 ${(cumulativeProbability * 100).toFixed(1)}% に入ります。平均的な結果とは異なる、ユニークな体験ですね！`,
+                `【次へのステップ！】 ${wins}勝、Z値 ${zScore.toFixed(2)}。この結果は、統計的に見て上位約 ${(upperTailProbability * 100).toFixed(1)}% の範囲でした。次は、もっとレアな結果を目指して、じゃんけんを極めてみよう！`
+            ];
+            // ランダムにメッセージを選択
+            message = normalMessages[Math.floor(Math.random() * normalMessages.length)];
+            messageClass = ''; // 通常メッセージなのでクラスは付けない
+        }
     
-    messageAreaFinal.textContent = message;
-    messageAreaFinal.className = 'message-area'; // クラスをリセット
-    if (messageClass) {
-        messageAreaFinal.classList.add(messageClass);
-    }
+        messageAreaFinal.textContent = message;
+        messageAreaFinal.className = 'message-area'; // クラスをリセット
+        if (messageClass) {
+            messageAreaFinal.classList.add(messageClass);
+        }
 
         // グラフの描画
         drawChart(wins, expectedWins, stdDev, zScore);
