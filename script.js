@@ -156,16 +156,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 message = unluckyMessages[Math.floor(Math.random() * unluckyMessages.length)];
                 messageClass = 'unlucky';
             }
-        } else {
-            // 通常メッセージ
-            message = `堅実な結果！ ${wins}勝はZ値 ${zScore.toFixed(2)}。この結果は、統計的に見て上位約 ${(upperTailProbability * 100).toFixed(1)}% に入ります。`;
-        }
+       } else {
+        // 通常メッセージ (ランダムに選択)
+        const normalMessages = [
+            `【堅実な結果！】 ${wins}勝、Z値 ${zScore.toFixed(2)}。統計的に見ると、これは上位約 ${(upperTailProbability * 100).toFixed(1)}% の範囲です。AIの平均的な結果に近いかもしれませんね。`,
+            `【安定のパフォーマンス！】 ${wins}勝、Z値 ${zScore.toFixed(2)}。上位約 ${(upperTailProbability * 100).toFixed(1)}% の結果で、まさに「平均的」なじゃんけんとなりました。統計学では、この「普通」の分布が基本となります。`,
+            `【普通の強さ、でも大切！】 ${wins}勝、Z値 ${zScore.toFixed(2)}。上位約 ${(upperTailProbability * 100).toFixed(1)}% の結果は、多くの人が経験する確率です。この「普通」からどれだけ離れているかが、確率の面白さなんですよね！`,
+            `【AIも納得？】 ${wins}勝、Z値 ${zScore.toFixed(2)}。この結果は、統計的に上位約 ${(upperTailProbability * 100).toFixed(1)}% に位置します。AIが予測する範囲内の、安定したパフォーマンスです！`,
+            `【君は平均を引いた！すごい！】 ${wins}勝、Z値 ${zScore.toFixed(2)}。上位約 ${(upperTailProbability * 100).toFixed(1)}% ということは、これはまさに「平均的な」結果！ 宝くじに当たるより難しいかもしれない（？）この平均値を引き当てた君は、ある意味ラッキー！`,
+            `【次へのステップ！】 ${wins}勝、Z値 ${zScore.toFixed(2)}。この結果は、統計的に見て上位約 ${(upperTailProbability * 100).toFixed(1)}% の範囲でした。次は、もっとレアな結果を目指して、じゃんけんを極めてみよう！`
+        ];
         
-        messageAreaFinal.textContent = message;
-        messageAreaFinal.className = 'message-area'; // クラスをリセット
-        if (messageClass) {
-            messageAreaFinal.classList.add(messageClass);
-        }
+        // ランダムにメッセージを選択
+        message = normalMessages[Math.floor(Math.random() * normalMessages.length)];
+        messageClass = ''; // 通常メッセージなのでクラスは付けない
+    }
+    
+    messageAreaFinal.textContent = message;
+    messageAreaFinal.className = 'message-area'; // クラスをリセット
+    if (messageClass) {
+        messageAreaFinal.classList.add(messageClass);
+    }
 
         // グラフの描画
         drawChart(wins, expectedWins, stdDev, zScore);
